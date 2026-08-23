@@ -7,7 +7,7 @@ on:
       - "v*"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   onefile:
@@ -65,3 +65,55 @@ jobs:
           name: ${{ matrix.artifact }}
           path: dist-app/${{ matrix.artifact }}
           if-no-files-found: error
+
+  release:
+    name: Create GitHub Release
+    needs: onefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List files
+        run: ls -lh artifacts
+
+      - name: Choose release tag
+        id: meta
+        shell: bash
+        run: |
+          if [ "${{ github.ref_type }}" = "tag" ]; then
+            echo "tag=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+            echo "title=Portway ${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=onefile-${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+            echo "title=Portway one-file build ${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.title }}
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/portway-linux
+            artifacts/portway-macos
+            artifacts/portway-windows.exe
+          body: |
+            One-file Portway builds (GUI, Flask, TUI, and CLI).
+
+            | File | Platform |
+            | --- | --- |
+            | `portway-linux` | Linux |
+            | `portway-macos` | macOS |
+            | `portway-windows.exe` | Windows |
+
+            Download, mark executable on Unix (`chmod +x portway-linux`), then run it.
