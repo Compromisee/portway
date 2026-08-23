@@ -1,0 +1,79 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: portway-linux
+          - os: macos-latest
+            artifact: portway-macos
+          - os: windows-latest
+            artifact: portway-windows
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build extras
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[build]"
+
+      - name: PyInstaller
+        run: >
+          python -m PyInstaller
+          --noconfirm
+          --clean
+          --name portway
+          --add-data ${{ matrix.os == 'windows-latest' && 'portway/web;portway/web' || 'portway/web:portway/web' }}
+          --collect-all webview
+          portway/__main__.py
+
+      - name: Pack artifact
+        shell: bash
+        run: |
+          mkdir -p dist-app
+          if [ -d dist/portway ]; then
+            tar -C dist -czf "dist-app/${{ matrix.artifact }}.tar.gz" portway
+          else
+            cp dist/portway.exe "dist-app/${{ matrix.artifact }}.exe" || cp dist/portway "dist-app/${{ matrix.artifact }}"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist-app/*
+
+  publish:
+    name: GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Publish
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: artifacts/*
+          body_path: CHANGELOG.md

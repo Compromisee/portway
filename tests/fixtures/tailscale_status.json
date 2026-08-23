@@ -1,0 +1,27 @@
+{
+  "BackendState": "Running",
+  "Self": {
+    "DNSName": "studio.tailnet.ts.net.",
+    "HostName": "studio",
+    "TailscaleIPs": ["100.101.20.3", "fd7a:115c::1"],
+    "Online": true,
+    "OS": "linux"
+  },
+  "Peer": {
+    "n1": {
+      "DNSName": "nas.tailnet.ts.net.",
+      "HostName": "nas",
+      "TailscaleIPs": ["100.88.12.9"],
+      "Online": true,
+      "OS": "linux",
+      "ExitNode": true
+    },
+    "n2": {
+      "DNSName": "phone.tailnet.ts.net.",
+      "HostName": "phone",
+      "TailscaleIPs": ["100.70.1.4"],
+      "Online": false,
+      "OS": "iOS"
+    }
+  }
+}

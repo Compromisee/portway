@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portway — Find and open services on Wi-Fi and Tailscale</title>
+  <meta name="description" content="Portway is a local desktop app that scans this machine, your Wi-Fi subnet, and Tailscale peers for open ports, then lets you open Flask apps, dashboards, and other HTTP services in one click.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true"></div>
+
+  <header class="nav">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true"></span>
+      <span>Portway</span>
+    </a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#install">Install</a>
+      <a href="#security">Security</a>
+    </nav>
+    <a class="btn small" href="https://github.com/portway-app/portway">
+      <span data-icon="folder-git-2"></span>
+      Source
+    </a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span data-icon="radar"></span> Local harbor master</p>
+        <h1>Every open door<br>on your network.</h1>
+        <p class="lede">
+          Portway is a Python desktop app that sweeps this machine, the Wi-Fi subnet,
+          and Tailscale peers for listening ports. When it finds a Flask server,
+          Vite, dashboard, or anything HTTP, you open it.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#install"><span data-icon="download"></span> Install Portway</a>
+          <a class="btn ghost" href="app/index.html"><span data-icon="door-open"></span> Try the deck</a>
+        </div>
+        <ul class="facts">
+          <li><span data-icon="wifi"></span> Wi-Fi / LAN</li>
+          <li><span data-icon="share-2"></span> Tailscale mesh</li>
+          <li><span data-icon="laptop"></span> This machine</li>
+          <li><span data-icon="flask-conical"></span> Flask, Vite, Jupyter</li>
+        </ul>
+      </div>
+      <div class="hero-visual" id="preview" aria-label="Product preview">
+        <div class="window">
+          <div class="window-bar">
+            <i></i><i></i><i></i>
+            <span>Portway</span>
+          </div>
+          <div class="window-body">
+            <aside>
+              <div class="pier on"><span data-icon="laptop"></span> This machine</div>
+              <div class="pier"><span data-icon="wifi"></span> Wi-Fi / LAN</div>
+              <div class="pier mesh"><span data-icon="share-2"></span> Tailscale</div>
+            </aside>
+            <div class="pane">
+              <article>
+                <header><span data-icon="laptop"></span> localhost · 127.0.0.1</header>
+                <div class="row"><b>5000</b> Flask <em>Werkzeug</em> <span class="open">Open</span></div>
+                <div class="row"><b>5173</b> Vite <em>dev</em> <span class="open">Open</span></div>
+                <div class="row"><b>22</b> SSH <em>remote</em> <span class="copy">Copy</span></div>
+              </article>
+              <article class="mesh-card">
+                <header><span data-icon="share-2"></span> nas · 100.88.12.9</header>
+                <div class="row"><b>8096</b> Jellyfin <em>http</em> <span class="open">Open</span></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="strip">
+      <div><strong>Local only.</strong> Public internet ranges are refused.</div>
+      <div><strong>Three piers.</strong> This machine, Wi-Fi, Tailscale.</div>
+      <div><strong>One click.</strong> HTTP services open in the browser.</div>
+    </section>
+
+    <section class="split" id="features">
+      <article>
+        <div class="icon-wrap sea" data-icon="wifi" data-size="22"></div>
+        <h2>Wi-Fi, without the guesswork</h2>
+        <p>
+          Portway reads your interface, ARP neighbors, and the /24 you actually sit on.
+          It will not walk a /8. Router admin pages, printers, NAS boxes, and that
+          forgotten Flask process on a laptop all show up as doors you can open.
+        </p>
+      </article>
+      <article>
+        <div class="icon-wrap mesh" data-icon="share-2" data-size="22"></div>
+        <h2>Tailscale, by name</h2>
+        <p>
+          If the Tailscale CLI is on PATH, Portway reads <code>tailscale status --json</code>
+          and scans peers — online, offline, exit nodes included. MagicDNS hostnames
+          stay attached so you open <code>nas</code>, not a CGNAT riddle.
+        </p>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article>
+        <span data-icon="flask-conical"></span>
+        <h3>Knows developer ports</h3>
+        <p>Flask 5000, Vite 5173, Django 8000, Jupyter 8888, Plex, Jellyfin, Redis, Postgres, and the rest of the usual suspects.</p>
+      </article>
+      <article>
+        <span data-icon="scan-search"></span>
+        <h3>All 65535, on purpose</h3>
+        <p>Quick and Developer profiles stay fast. Deep mode walks every TCP port on a single host you choose.</p>
+      </article>
+      <article>
+        <span data-icon="door-open"></span>
+        <h3>Open, or copy</h3>
+        <p>Web services get an Open button. SSH and databases get a copyable address. HTTP titles and Server headers are fingerprinted.</p>
+      </article>
+      <article>
+        <span data-icon="shield"></span>
+        <h3>Stays on your side</h3>
+        <p>No account. No telemetry. No remote targets. The scanner refuses public ranges and caps discovery at a /24.</p>
+      </article>
+    </section>
+
+    <section class="how" id="how">
+      <h2>How a sweep works</h2>
+      <ol>
+        <li>
+          <span data-icon="network"></span>
+          <div>
+            <h3>Chart the piers</h3>
+            <p>Interfaces are classified as this machine, Wi-Fi / Ethernet, or Tailscale. Virtual bridges such as Docker are skipped.</p>
+          </div>
+        </li>
+        <li>
+          <span data-icon="crosshair"></span>
+          <div>
+            <h3>Connect, do not exploit</h3>
+            <p>A TCP connect scan with a short timeout. Open ports are optionally probed with a tiny HTTP GET to read the title.</p>
+          </div>
+        </li>
+        <li>
+          <span data-icon="external-link"></span>
+          <div>
+            <h3>Open the ones that matter</h3>
+            <p>Click Open and the default browser takes the URL. Everything else copies as <code>host:port</code>.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="install" id="install">
+      <div>
+        <h2>Install and launch</h2>
+        <p>Python 3.10 or newer. The desktop window uses pywebview. A CLI is included for headless machines.</p>
+        <pre><code>git clone https://github.com/portway-app/portway
+cd portway
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+portway</code></pre>
+        <p class="fine">Terminal only: <code>portway --cli --profile quick</code></p>
+      </div>
+      <aside>
+        <h3>Requirements</h3>
+        <ul>
+          <li><span data-icon="monitor"></span> Linux, macOS, or Windows</li>
+          <li><span data-icon="share-2"></span> Tailscale CLI optional</li>
+          <li><span data-icon="wifi"></span> Permission to reach local hosts</li>
+        </ul>
+        <a class="btn ghost" href="https://github.com/portway-app/portway/releases">
+          <span data-icon="package"></span> Releases
+        </a>
+      </aside>
+    </section>
+
+    <section class="security" id="security">
+      <span data-icon="lock"></span>
+      <h2>What Portway will not do</h2>
+      <ul>
+        <li>It will not scan the public internet or a range you are not attached to.</li>
+        <li>It will not walk more than a /24 during host discovery.</li>
+        <li>It will not run an all-port sweep against a whole subnet.</li>
+        <li>It will not send results anywhere. The process is local.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div>
+      <span class="mark tiny"></span>
+      <strong>Portway</strong>
+      <span>MIT License</span>
+    </div>
+    <div class="links">
+      <a href="https://github.com/portway-app/portway"><span data-icon="folder-git-2"></span> GitHub</a>
+      <a href="https://github.com/portway-app/portway/blob/main/CHANGELOG.md"><span data-icon="file-text"></span> Changelog</a>
+      <a href="https://lucide.dev/icons/"><span data-icon="book-open"></span> Lucide icons</a>
+    </div>
+  </footer>
+
+  <script src="icons.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portway</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"></span>
+        <div>
+          <div class="wordmark">Portway</div>
+          <div class="tag">Harbor master for local ports</div>
+        </div>
+      </div>
+
+      <div class="search">
+        <span data-icon="search" class="search-icon"></span>
+        <input id="q" type="search" placeholder="Filter hosts, ports, Flask, Vite..." autocomplete="off">
+      </div>
+
+      <div class="actions">
+        <label class="select">
+          <span data-icon="sliders-horizontal"></span>
+          <select id="profile" title="Scan profile">
+            <option value="quick">Quick</option>
+            <option value="developer" selected>Developer</option>
+            <option value="deep">All ports</option>
+          </select>
+        </label>
+        <button id="scan" class="btn primary" type="button">
+          <span data-icon="radar"></span>
+          <span class="btn-label">Scan</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="piers">
+        <div class="piers-head">
+          <span>Piers</span>
+          <button id="refresh" class="icon-btn" type="button" title="Refresh networks">
+            <span data-icon="refresh-cw"></span>
+          </button>
+        </div>
+        <nav id="pier-list" class="pier-list"></nav>
+        <div class="legend">
+          <div><i class="dot brass"></i> This machine</div>
+          <div><i class="dot sea"></i> Wi-Fi / LAN</div>
+          <div><i class="dot mesh"></i> Tailscale</div>
+        </div>
+      </aside>
+
+      <main class="deck">
+        <section class="toolbar">
+          <div class="chips" id="chips"></div>
+          <label class="toggle">
+            <input id="web-only" type="checkbox">
+            <span>Openable only</span>
+          </label>
+        </section>
+
+        <section id="notice" class="notice hidden"></section>
+        <section id="empty" class="empty"></section>
+        <section id="results" class="results"></section>
+      </main>
+    </div>
+
+    <footer class="status">
+      <div id="status-left" class="status-left">
+        <span data-icon="scan-line"></span>
+        <span id="status-text">Ready to sweep the harbor.</span>
+      </div>
+      <div class="status-right">
+        <span id="counts">0 open</span>
+        <span id="elapsed"></span>
+      </div>
+      <div id="bar" class="bar"><i></i></div>
+    </footer>
+  </div>
+
+  <div id="toasts" class="toasts"></div>
+  <script src="icons.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
