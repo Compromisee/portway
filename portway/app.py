@@ -13,6 +13,7 @@ from pathlib import Path
 from portway import __version__
 from portway.cli import print_ip_list, print_scan
 from portway.discovery import collect_targets
+from portway.paths import web_dir
 from portway.scanner import scan_targets
 from portway.services import ports_for_profile
 from portway.session import flatten_hosts
@@ -20,12 +21,7 @@ from portway.tokens import TokenStore
 
 
 def _web_dir() -> Path:
-    meipass = getattr(sys, "_MEIPASS", None)
-    if meipass:
-        bundled = Path(meipass) / "portway" / "web"
-        if bundled.exists():
-            return bundled
-    return Path(__file__).resolve().parent / "web"
+    return web_dir()
 
 
 WEB_DIR = _web_dir()

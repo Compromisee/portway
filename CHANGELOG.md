@@ -7,9 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- One-file packaging workflow (`package.yml`) and `packaging/portway.spec` for Linux, macOS, and Windows.
+
+### Changed
+
+- GUI lists live hosts as they are found, with stats, activity, and custom dropdowns.
+- LAN discovery now probes the subnet instead of inventing every address in the /24.
+
 ### Fixed
 
 - `npm run build` works from the repository root. The previous error was from running it outside `gui/`.
+- Tighter, consistent padding on the HeroUI deck.
 
 ## [0.2.0] - 2026-08-23
 

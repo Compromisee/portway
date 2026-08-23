@@ -98,6 +98,17 @@ def test_parse_gateway_and_arp():
     assert "192.168.1.14" in ips
 
 
+def test_candidate_hosts_skip_placeholder_subnet(monkeypatch):
+    from portway.discovery import Nic, candidate_hosts_for_nic
+
+    monkeypatch.setattr("portway.discovery.neighbors_from_arp", lambda: [])
+    nic = Nic(name="wlan0", ip="192.168.1.20", prefix=24, kind="wifi", cidr="192.168.1.20/24")
+    hosts = candidate_hosts_for_nic(nic, ping=False)
+    ips = {host.ip for host in hosts}
+    assert "192.168.1.20" in ips
+    assert len(hosts) < 10
+
+
 def test_parse_tailscale_status():
     payload = json.loads((FIXTURES / "tailscale_status.json").read_text())
     hosts = parse_tailscale_status(payload)

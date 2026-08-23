@@ -1,4 +1,4 @@
-.PHONY: install test lint cli list tui serve site gui-build
+.PHONY: install test lint cli list tui serve site gui-build package
 
 install:
 	python -m pip install -e ".[dev]"
@@ -27,3 +27,7 @@ site:
 gui-build:
 	cd gui && NPM_CONFIG_CACHE=/tmp/portway-npm-cache npm ci && NPM_CONFIG_CACHE=/tmp/portway-npm-cache npm run build
 	rm -rf gui/node_modules
+
+package:
+	python -m pip install -e ".[build]"
+	python -m PyInstaller --noconfirm --clean packaging/portway.spec

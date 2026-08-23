@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import os
-import sys
 from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory
 
 from portway import __version__
+from portway.paths import web_dir
 from portway.session import ScanSession
 from portway.tokens import TokenStore, normalize_target
 
@@ -16,12 +16,7 @@ SESSION = ScanSession()
 
 
 def _web_dir() -> Path:
-    meipass = getattr(sys, "_MEIPASS", None)
-    if meipass:
-        bundled = Path(meipass) / "portway" / "web"
-        if bundled.exists():
-            return bundled
-    return Path(__file__).resolve().parent / "web"
+    return web_dir()
 
 
 def create_app(store: TokenStore | None = None) -> Flask:

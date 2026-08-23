@@ -21,6 +21,7 @@ htmlcov/
 
 # Packaging
 *.spec
+!packaging/*.spec
 /dist-app/
 
 # Editors

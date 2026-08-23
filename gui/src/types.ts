@@ -7,6 +7,8 @@ export type HostMeta = {
   os?: string;
   online?: boolean;
   tags?: string[];
+  state?: string;
+  open_count?: number;
 };
 
 export type OpenItem = {
@@ -28,7 +30,9 @@ export type OpenItem = {
 export type Snapshot = {
   hostname?: string;
   platform?: string;
+  user?: string;
   tailscale?: { available?: boolean; error?: string; backend?: string };
+  nics?: { name: string; ip: string; prefix: number; kind: string; gateway?: string }[];
   groups?: Record<
     string,
     {
@@ -46,4 +50,16 @@ export type TokenRow = {
   query_key: string;
   note: string;
   has_token: boolean;
+};
+
+export type ScanStatus = {
+  running: boolean;
+  phase?: string;
+  items: OpenItem[];
+  hosts?: HostMeta[];
+  activity?: { text: string; t: number }[];
+  progress: Record<string, number | string>;
+  count: number;
+  started_at?: number | null;
+  snapshot?: Snapshot;
 };

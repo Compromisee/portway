@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/portway-app/portway/actions/workflows/ci.yml/badge.svg)](https://github.com/portway-app/portway/actions/workflows/ci.yml)
 [![Pages](https://github.com/portway-app/portway/actions/workflows/pages.yml/badge.svg)](https://github.com/portway-app/portway/actions/workflows/pages.yml)
-[![Release](https://github.com/portway-app/portway/actions/workflows/release.yml/badge.svg)](https://github.com/portway-app/portway/actions/workflows/release.yml)
+[![Package](https://github.com/portway-app/portway/actions/workflows/package.yml/badge.svg)](https://github.com/portway-app/portway/actions/workflows/package.yml)
 
 Find open ports on this machine, the Wi-Fi subnet, and Tailscale, then open the ones that speak HTTP.
 
@@ -111,6 +111,23 @@ cd gui && npm install && npm run dev
 ```
 
 `npm run dev` expects `portway serve` on port 5050 so `/api` can proxy.
+
+## One-file binary
+
+The **Package** workflow builds a single executable per OS with PyInstaller (`--onefile`).
+
+```bash
+make package
+./dist/portway list
+```
+
+GitHub Actions: **Actions → Package → Run workflow**. Artifacts:
+
+- `portway-linux`
+- `portway-macos`
+- `portway-windows.exe`
+
+The same job also runs on `v*` tags. The binary includes the HeroUI deck, Flask, TUI, and CLI.
 
 ## License
 

@@ -120,44 +120,22 @@ def classify_iface(name: str, ip: str) -> str:
     return "wifi"
 
 
+def is_local_address(ip: str | ipaddress.IPv4Address) -> bool:
+    addr = ipaddress.ip_address(ip)
+    return bool(
+        addr.is_private or addr.is_loopback or addr.is_link_local or addr in TAILSCALE_CGNAT
+    )
+
+
 def constrain_network(cidr: str, host_ip: str | None = None) -> ipaddress.IPv4Network:
-    """Refuse huge or public ranges. Cap discovery at /24 around the host."""
+    """Refuse public ranges. Cap discovery at /24 around the host."""
     net = ipaddress.ip_network(cidr, strict=False)
-    if not net.version == 4:
+    if net.version != 4:
         raise ValueError("Only IPv4 is supported")
-    if net.is_global and net not in (
-        ipaddress.ip_network("100.64.0.0/10"),
-    ) and not any(
-        ipaddress.ip_address(str(net.network_address)) in block
-        for block in (
-            ipaddress.ip_network("10.0.0.0/8"),
-            ipaddress.ip_network("172.16.0.0/12"),
-            ipaddress.ip_network("192.168.0.0/16"),
-            TAILSCALE_CGNAT,
-            LOOPBACK,
-        )
-    ):
-        # ip_network.is_global is True for many private-adjacent ranges; extra check:
-        addr = ipaddress.ip_address(host_ip) if host_ip else net.network_address
-        if not (
-            addr.is_private
-            or addr.is_loopback
-            or addr in TAILSCALE_CGNAT
-            or addr.is_link_local
-        ):
-            raise ValueError(f"Refusing to scan non-local network {cidr}")
-    addr = ipaddress.ip_address(host_ip) if host_ip else next(net.hosts(), net.network_address)
-    if not (
-        addr.is_private
-        or addr.is_loopback
-        or addr in TAILSCALE_CGNAT
-        or addr.is_link_local
-    ):
+    addr = ipaddress.ip_address(host_ip) if host_ip else net.network_address
+    if not is_local_address(addr):
         raise ValueError(f"Refusing to scan non-local address {addr}")
-    if net.prefixlen < 24:
-        # Never walk a /16. Stay on the host's /24.
-        return ipaddress.ip_network(f"{addr}/{max(net.prefixlen, 24)}", strict=False)
-    if net.num_addresses > 256:
+    if net.prefixlen < 24 or net.num_addresses > 256:
         return ipaddress.ip_network(f"{addr}/24", strict=False)
     return net
 
@@ -219,9 +197,11 @@ def parse_ipconfig(text: str) -> list[Nic]:
         kind = classify_iface(current_name, ip)
         if kind == "virtual":
             continue
-        nics.append(
-            Nic(name=current_name, ip=ip, prefix=prefix, kind=kind, cidr=f"{ip}/{prefix}")
-        )
+        gw_match = re.search(r"Default Gateway[^:]*:\s*(\d+\.\d+\.\d+\.\d+)", block)
+        nic = Nic(name=current_name, ip=ip, prefix=prefix, kind=kind, cidr=f"{ip}/{prefix}")
+        if gw_match:
+            nic.gateway = gw_match.group(1)
+        nics.append(nic)
     return nics
 
 
@@ -470,15 +450,34 @@ def candidate_hosts_for_nic(nic: Nic, ping: bool = False) -> list[Host]:
         except ValueError:
             continue
 
-    # For small subnets, include every address so a connect-scan can find quiet hosts.
-    if net.prefixlen >= 24 and net.num_addresses <= 256:
-        for addr in net.hosts():
-            ip = str(addr)
-            if ping and ip not in seen and not ping_host(ip):
+    if ping:
+        for ip in subnet_ips(nic):
+            if ip in seen:
                 continue
-            add(ip, source="subnet")
+            if ping_host(ip):
+                add(ip, source="ping")
 
     return hosts
+
+
+PROBE_PORTS = (22, 80, 443, 139, 445, 3389, 5000, 5357, 8080, 8888)
+
+
+def subnet_ips(nic: Nic) -> list[str]:
+    try:
+        net = constrain_network(nic.cidr, nic.ip)
+    except ValueError:
+        return []
+    return [str(addr) for addr in net.hosts()]
+
+
+def host_is_live(ip: str, timeout: float = 0.18) -> bool:
+    """Active check: ICMP ping, then a few common TCP ports."""
+    from portway.scanner import check_port
+
+    if ping_host(ip, timeout=max(timeout, 0.25)):
+        return True
+    return any(check_port(ip, port, timeout) for port in PROBE_PORTS)
 
 
 def collect_targets(kinds: Iterable[str] | None = None) -> dict:
