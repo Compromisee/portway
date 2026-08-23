@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `npm run build` works from the repository root. The previous error was from running it outside `gui/`.
+
 ## [0.2.0] - 2026-08-23
 
 ### Added

@@ -1,0 +1,12 @@
+{
+  "name": "portway",
+  "private": true,
+  "description": "Root scripts for the HeroUI GUI. Run npm run build from this folder.",
+  "scripts": {
+    "prebuild": "npm install --prefix gui",
+    "build": "npm run build --prefix gui",
+    "dev": "npm run dev --prefix gui",
+    "preview": "npm run preview --prefix gui",
+    "lint": "npm run lint --prefix gui"
+  }
+}

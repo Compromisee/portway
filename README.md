@@ -44,7 +44,13 @@ pip install -e .
 portway
 ```
 
-Optional GUI rebuild:
+Optional GUI rebuild (from the **repository root**, not a random folder):
+
+```bash
+npm run build
+```
+
+That installs `gui/` dependencies if needed and writes the HeroUI bundle to `portway/web/`. Same thing, spelled out:
 
 ```bash
 cd gui
