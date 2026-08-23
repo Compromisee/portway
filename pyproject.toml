@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "portway"
-version = "0.1.0"
-description = "Find and open services on Wi-Fi and Tailscale from a local desktop app."
+version = "0.2.0"
+description = "Find and open services on Wi-Fi and Tailscale from a HeroUI desktop app, TUI, CLI, or Flask server."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 authors = [{ name = "Portway" }]
-keywords = ["ports", "scanner", "tailscale", "wifi", "pywebview", "lan", "discovery"]
+keywords = ["ports", "scanner", "tailscale", "wifi", "pywebview", "lan", "discovery", "flask", "tui"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Desktop Environment",
@@ -26,6 +26,9 @@ classifiers = [
 ]
 dependencies = [
     "pywebview>=5.1",
+    "flask>=3.0",
+    "rich>=13.7",
+    "textual>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -50,7 +53,7 @@ Issues = "https://github.com/portway-app/portway/issues"
 include = ["portway*"]
 
 [tool.setuptools.package-data]
-portway = ["web/*"]
+portway = ["web/*", "web/**/*"]
 
 [tool.ruff]
 line-length = 100

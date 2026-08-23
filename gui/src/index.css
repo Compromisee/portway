@@ -1,0 +1,51 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+
+:root {
+  color-scheme: dark;
+  --accent: oklch(0.78 0.12 75);
+  --accent-foreground: oklch(0.22 0.03 70);
+  --background: #080b10;
+  --foreground: #eef2f7;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #080b10;
+  color: #eef2f7;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(1000px 420px at 8% -10%, rgba(212, 160, 84, 0.1), transparent 50%),
+    radial-gradient(800px 360px at 100% 0%, rgba(139, 124, 246, 0.1), transparent 46%),
+    #080b10;
+}
+
+.font-display {
+  font-family: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+}
+
+.mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: linear-gradient(160deg, #2a2116, #141018);
+  border: 1px solid rgba(212, 160, 84, 0.45);
+  position: relative;
+  display: inline-block;
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 9px 11px 7px 8px;
+  border: 1.5px solid #d4a054;
+  border-left-width: 3px;
+  border-radius: 1px 5px 5px 1px;
+  transform: perspective(20px) rotateY(-18deg);
+}

@@ -34,9 +34,9 @@
         <p class="eyebrow"><span data-icon="radar"></span> Local harbor master</p>
         <h1>Every open door<br>on your network.</h1>
         <p class="lede">
-          Portway is a Python desktop app that sweeps this machine, the Wi-Fi subnet,
-          and Tailscale peers for listening ports. When it finds a Flask server,
-          Vite, dashboard, or anything HTTP, you open it.
+          Portway is a Python scanner with a HeroUI React deck, a Flask server,
+          a color CLI, and a TUI. It sweeps this machine, the Wi-Fi subnet,
+          and Tailscale. Protected IPs take a token before they open.
         </p>
         <div class="hero-actions">
           <a class="btn primary" href="#install"><span data-icon="download"></span> Install Portway</a>
@@ -47,6 +47,7 @@
           <li><span data-icon="share-2"></span> Tailscale mesh</li>
           <li><span data-icon="laptop"></span> This machine</li>
           <li><span data-icon="flask-conical"></span> Flask, Vite, Jupyter</li>
+          <li><span data-icon="lock"></span> Token for protected IPs</li>
         </ul>
       </div>
       <div class="hero-visual" id="preview" aria-label="Product preview">
@@ -158,14 +159,17 @@
     <section class="install" id="install">
       <div>
         <h2>Install and launch</h2>
-        <p>Python 3.10 or newer. The desktop window uses pywebview. A CLI is included for headless machines.</p>
+        <p>Python 3.10 or newer. The desktop window is HeroUI in pywebview, backed by Flask. The TUI and CLI share the same scanner.</p>
         <pre><code>git clone https://github.com/portway-app/portway
 cd portway
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
-portway</code></pre>
-        <p class="fine">Terminal only: <code>portway --cli --profile quick</code></p>
+portway                 # HeroUI desktop
+portway serve           # Flask on :5050
+portway tui             # terminal listing
+portway list            # colored IPs</code></pre>
+        <p class="fine">Save a Jupyter token: <code>portway list --token 127.0.0.1:8888=YOUR_TOKEN</code></p>
       </div>
       <aside>
         <h3>Requirements</h3>

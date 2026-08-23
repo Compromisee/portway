@@ -1,1 +1,4 @@
 pywebview>=5.1
+flask>=3.0
+rich>=13.7
+textual>=1.0

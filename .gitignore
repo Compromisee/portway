@@ -39,3 +39,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node / HeroUI GUI
+node_modules/
+gui/dist/
+*.tsbuildinfo
+.oxlintcache
+.npm/

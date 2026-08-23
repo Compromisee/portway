@@ -13,6 +13,7 @@ from html.parser import HTMLParser
 from typing import Any
 
 from portway.services import hint_for, url_for
+from portway.tokens import looks_protected
 
 EventCallback = Callable[[dict[str, Any]], None]
 
@@ -127,6 +128,7 @@ class OpenPort:
     scheme: str | None
     url: str | None
     openable: bool
+    protected: bool = False
     banner: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -229,6 +231,7 @@ def scan_targets(
                 scheme=hint.scheme,
                 url=url_for(ip, port, hint.scheme),
                 openable=bool(hint.scheme),
+                protected=looks_protected(port, hint.key),
             ).to_dict()
         payload["host_meta"] = host_meta.get(ip, {})
         found.append(payload)
